@@ -57,21 +57,21 @@ if ( CGAL_BRANCH_BUILD )
   message( STATUS "Build CGAL from ${CGAL_SCM_NAME}-branch: ${CGAL_SCM_BRANCH_NAME}" )
 
   # list packages
-  file(GLOB CGAL_CONFIGURED_PACKAGES RELATIVE ${CMAKE_SOURCE_DIR} "${CMAKE_SOURCE_DIR}/*")
+  file(GLOB CGAL_CONFIGURED_PACKAGES RELATIVE ${PROJECT_SOURCE_DIR} "${PROJECT_SOURCE_DIR}/*")
   list(SORT CGAL_CONFIGURED_PACKAGES)
   list(REMOVE_ITEM CGAL_CONFIGURED_PACKAGES copyright CMakeLists.txt .svn .git)
 
   # detect and remove not existing package-directories
   foreach (package ${CGAL_CONFIGURED_PACKAGES})
-    if (NOT IS_DIRECTORY "${CMAKE_SOURCE_DIR}/${package}")
+    if (NOT IS_DIRECTORY "${PROJECT_SOURCE_DIR}/${package}")
       list(APPEND CGAL_WRONG_PACKAGES ${package})
-    elseif(NOT EXISTS "${CMAKE_SOURCE_DIR}/${package}/package_info/${package}/maintainer")
+    elseif(NOT EXISTS "${PROJECT_SOURCE_DIR}/${package}/package_info/${package}/maintainer")
       list(APPEND CGAL_WRONG_PACKAGES ${package})
     endif()
   endforeach()
 
   find_program(CGAL_CREATE_CMAKE_SCRIPT cgal_create_cmake_script
-               HINT ${CMAKE_SOURCE_DIR}/Scripts/scripts
+               HINT ${PROJECT_SOURCE_DIR}/Scripts/scripts
 	       DOC "Script cgal_create_cmake_script, that creates CMakeLists.txt files"
 	       NO_DEFAULT_PATH
 	       NO_CMAKE_ENVIRONMENT_PATH)
@@ -84,14 +84,14 @@ if ( CGAL_BRANCH_BUILD )
   set(CGAL_CONFIGURED_PACKAGES_NAMES ${CGAL_CONFIGURED_PACKAGES})
   set(CGAL_CONFIGURED_PACKAGES)
   foreach (package ${CGAL_CONFIGURED_PACKAGES_NAMES})
-    list(APPEND CGAL_CONFIGURED_PACKAGES "${CMAKE_SOURCE_DIR}/${package}")
+    list(APPEND CGAL_CONFIGURED_PACKAGES "${PROJECT_SOURCE_DIR}/${package}")
   endforeach()
 
 
-  set(CGAL_INSTALLATION_PACKAGE_DIR "${CMAKE_SOURCE_DIR}/Installation" CACHE INTERNAL "Directory containing the Installation package")
-  set(CGAL_MAINTENANCE_PACKAGE_DIR "${CMAKE_SOURCE_DIR}/Maintenance" CACHE INTERNAL "Directory containing the Maintenance package")
-  set(CGAL_CORE_PACKAGE_DIR "${CMAKE_SOURCE_DIR}/Core" CACHE INTERNAL "Directory containing the Core package")
-  set(CGAL_GRAPHICSVIEW_PACKAGE_DIR "${CMAKE_SOURCE_DIR}/GraphicsView" CACHE INTERNAL "Directory containing the GraphicsView package")
+  set(CGAL_INSTALLATION_PACKAGE_DIR "${PROJECT_SOURCE_DIR}/Installation" CACHE INTERNAL "Directory containing the Installation package")
+  set(CGAL_MAINTENANCE_PACKAGE_DIR "${PROJECT_SOURCE_DIR}/Maintenance" CACHE INTERNAL "Directory containing the Maintenance package")
+  set(CGAL_CORE_PACKAGE_DIR "${PROJECT_SOURCE_DIR}/Core" CACHE INTERNAL "Directory containing the Core package")
+  set(CGAL_GRAPHICSVIEW_PACKAGE_DIR "${PROJECT_SOURCE_DIR}/GraphicsView" CACHE INTERNAL "Directory containing the GraphicsView package")
 
   message(STATUS "Installation package directory: ${CGAL_INSTALLATION_PACKAGE_DIR}")
   message(STATUS "Maintenance package directory: ${CGAL_MAINTENANCE_PACKAGE_DIR}")
@@ -787,11 +787,14 @@ set(CGAL_LIBRARIES_DIR ${CMAKE_BINARY_DIR}/lib)
 
 set(CGAL_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/include)
 
+
 foreach (package ${CGAL_CONFIGURED_PACKAGES})
   set(CGAL_INCLUDE_DIRS ${CGAL_INCLUDE_DIRS} ${package}/include)
 endforeach()
 
 include_directories (${CGAL_INCLUDE_DIRS})
+
+set(FF_CGAL_INCLUDE_DIRS ${CGAL_INCLUDE_DIRS}) 
 
 cache_get(CGAL_3RD_PARTY_PRECONFIGURED )
 
@@ -1258,3 +1261,4 @@ if(NOT CGAL_BRANCH_BUILD AND EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/doc")
   # in a non-branch build this is the top-level CMakeLists.txt
   add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/doc")
 endif()
+
